@@ -1,5 +1,6 @@
-// === ESTATÍSTICAS E CHART - Script Standalone ===
+// === ESTATÍSTICAS, CHART E SELECTOR - Script Standalone ===
 // Carregado após script.js para garantir execução
+// Versão final com todos os botões + e - funcionando
 
 const RIFA_CONFIG = {
   totalNumeros: 800,
@@ -15,6 +16,12 @@ const SHEETS_DATA = {
   totalVendidos: 490,     // Total vendidos = reservado
   totalDisponiveis: 310   // Total disponíveis = livre
 };
+
+// Estado global
+var g_freeNumbers = [];
+var g_selectedNumbers = [];
+var g_quantity = 1;
+var g_valorUnitario = 3.00;
 
 // Carregar dados da planilha CSV (backup)
 async function loadSheetsData() {
@@ -38,19 +45,19 @@ async function loadSheetsData() {
 
 // Renderizar estatísticas e chart
 async function renderStats() {
-  const container = document.getElementById('statistics-container');
+  var container = document.getElementById('statistics-container');
   if (!container) return;
 
-  const stats = await loadSheetsData();
-  const livre = stats.livreParaCompra;
-  const reservado = stats.reservado;
-  const selecionado = stats.selecionado;
-  const total = RIFA_CONFIG.totalNumeros;
-  const totalVendidos = reservado;
-  const eurosArrecadados = totalVendidos * RIFA_CONFIG.valorUnitario;
-  const eurosObjetivo = total * RIFA_CONFIG.valorUnitario;
-  const eurosFaltam = eurosObjetivo - eurosArrecadados;
-  const percentualVendido = ((reservado / total) * 100).toFixed(1);
+  var stats = await loadSheetsData();
+  var livre = stats.livreParaCompra;
+  var reservado = stats.reservado;
+  var selecionado = stats.selecionado;
+  var total = RIFA_CONFIG.totalNumeros;
+  var totalVendidos = reservado;
+  var eurosArrecadados = totalVendidos * RIFA_CONFIG.valorUnitario;
+  var eurosObjetivo = total * RIFA_CONFIG.valorUnitario;
+  var eurosFaltam = eurosObjetivo - eurosArrecadados;
+  var percentualVendido = ((reservado / total) * 100).toFixed(1);
 
   // Renderizar HTML com estatísticas e gráfico
   container.style.display = 'block';
@@ -138,3 +145,168 @@ async function renderStats() {
     </div>
   `;
 }
+
+// === QUANTITY SELECTOR FUNCTIONS ===
+// Estas funções são definidas globalmente para serem chamadas pelos onclick handlers
+
+// Incrementar quantidade
+function incrementQuantity() {
+  var maxAllowed = Math.min(g_freeNumbers.length, 50);
+  if (g_quantity < maxAllowed) {
+    g_quantity++;
+    var quantidadeInput = document.getElementById('quantidade');
+    var quantityDisplay = document.getElementById('quantityDisplay');
+    var quantityPreview = document.getElementById('quantityPreview');
+    if (quantidadeInput) quantidadeInput.value = g_quantity;
+    if (quantityDisplay) quantityDisplay.textContent = g_quantity;
+    if (quantityPreview) quantityPreview.textContent = g_quantity;
+    updateCalculatePreview();
+    // Avisar se precisa selecionar mais números
+    var selectedCount = g_selectedNumbers.length;
+    if (g_quantity > selectedCount) {
+      alert('Selecione ' + (g_quantity - selectedCount) + ' numero(s) clicando nos numeros livres abaixo.');
+    }
+  } else {
+    alert('Limite maximo de ' + maxAllowed + ' numeros livres.');
+  }
+}
+
+// Decrementar quantidade
+function decrementQuantity() {
+  if (g_quantity > 1) {
+    g_quantity--;
+    var quantidadeInput = document.getElementById('quantidade');
+    var quantityDisplay = document.getElementById('quantityDisplay');
+    var quantityPreview = document.getElementById('quantityPreview');
+    if (quantidadeInput) quantidadeInput.value = g_quantity;
+    if (quantityDisplay) quantityDisplay.textContent = g_quantity;
+    if (quantityPreview) quantityPreview.textContent = g_quantity;
+    updateCalculatePreview();
+  }
+}
+
+// Atualizar preview de cálculo
+function updateCalculatePreview() {
+  var quantityDisplay = document.getElementById('quantityDisplay');
+  var quantityPreview = document.getElementById('quantityPreview');
+  var totalPrice = document.getElementById('totalPrice');
+  var quantidadeInput = document.getElementById('quantidade');
+
+  if (quantityDisplay) quantityDisplay.textContent = g_quantity;
+  if (quantityPreview) quantityPreview.textContent = g_quantity;
+  if (totalPrice) totalPrice.textContent = '€' + (g_valorUnitario * g_quantity).toFixed(2);
+  if (quantidadeInput) quantidadeInput.value = g_quantity;
+}
+
+// Selecionar número
+function selectNumber(number) {
+  if (g_selectedNumbers.indexOf(number) !== -1) {
+    g_selectedNumbers = g_selectedNumbers.filter(n => n !== number);
+  } else if (g_selectedNumbers.length < g_quantity) {
+    g_selectedNumbers.push(number);
+  } else {
+    alert('Selecione ' + g_quantity + ' numeros (clique no botao + para aumentar a quantidade)');
+    return;
+  }
+  updateSelectedDisplay();
+}
+
+// Atualizar display de números selecionados
+function updateSelectedDisplay() {
+  var container = document.getElementById('selectedNumbers');
+  if (container) {
+    if (g_selectedNumbers.length === 0) {
+      container.innerHTML = '<p class="no-numbers">Nenhum número selecionado ainda</p>';
+    } else {
+      container.innerHTML = g_selectedNumbers.map(n => '<span class="selected-number">' + n + '</span>').join('');
+    }
+  }
+}
+
+// Carregar números livres
+async function loadFreeNumbers() {
+  try {
+    // Tentar carregar do CSV primeiro
+    var csvResponse = await fetch('sheets-data.csv');
+    if (csvResponse.ok) {
+      var csvText = await csvResponse.text();
+      var lines = csvText.trim().split('\n');
+      var dataLine = lines[1].split(',');
+      var livre = parseInt(dataLine[0]) || 310;
+      g_freeNumbers = Array.from({length: livre}, (_, i) => i + 1);
+    } else {
+      throw new Error('CSV not found');
+    }
+  } catch (error) {
+    console.log('Usando dados padroes de numeros livres:', error);
+    g_freeNumbers = Array.from({length: 310}, (_, i) => i + 1);
+  }
+
+  // Atualizar contador de números livres
+  var freeCountElem = document.getElementById('freeNumbersCount');
+  if (freeCountElem) {
+    freeCountElem.textContent = g_freeNumbers.length;
+  }
+
+  // Mostrar números livres na interface
+  displayFreeNumbersList();
+}
+
+// Mostrar números livres na interface
+function displayFreeNumbersList() {
+  var container = document.getElementById('freeNumbers');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  if (g_freeNumbers.length === 0) {
+    container.innerHTML = '<div class="alert error">Nenhum número livre disponível no momento.</div>';
+    return;
+  }
+
+  var numbersToShow = g_freeNumbers.slice(0, 50);
+  numbersToShow.forEach(function(number) {
+    var numberElement = document.createElement('div');
+    numberElement.className = 'free-number';
+    numberElement.textContent = number;
+    numberElement.onclick = function() { selectNumber(number); };
+    container.appendChild(numberElement);
+  });
+
+  if (g_freeNumbers.length > 50) {
+    var moreElement = document.createElement('div');
+    moreElement.className = 'more-numbers';
+    moreElement.textContent = '+' + (g_freeNumbers.length - 50) + ' mais números disponíveis';
+    moreElement.style.cssText = 'color: #667eea; font-style: italic; margin-top: 10px; font-size: 0.9em;';
+    container.appendChild(moreElement);
+  }
+}
+
+// Inicializar quando DOM estiver pronto
+document.addEventListener('DOMContentLoaded', function() {
+  // Mostrar container de estatísticas
+  var statsContainer = document.getElementById('statistics-container');
+  if (statsContainer) {
+    statsContainer.style.display = 'block';
+  }
+
+  // Renderizar estatísticas e gráfico
+  renderStats();
+
+  // Carregar números livres
+  loadFreeNumbers();
+
+  // Inicializar displays de quantidade
+  var quantityDisplay = document.getElementById('quantityDisplay');
+  var quantityPreview = document.getElementById('quantityPreview');
+  var quantidadeInput = document.getElementById('quantidade');
+  if (quantityDisplay) quantityDisplay.textContent = g_quantity;
+  if (quantityPreview) quantityPreview.textContent = g_quantity;
+  if (quantidadeInput) quantidadeInput.value = g_quantity;
+
+  // Atualizar preview de cálculo
+  updateCalculatePreview();
+
+  // Inicializar display de números selecionados
+  updateSelectedDisplay();
+});
