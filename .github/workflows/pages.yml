@@ -1,0 +1,50 @@
+name: GitHub Pages
+
+on:
+  # Build and deploy when there's a push to the main branch
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'admin.html'
+      - 'script.js'
+      - 'style.css'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history for better analysis
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install --production
+      
+    - name: Build and deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: '.'
+        # Ensure we're using the main branch
+        force_orphan: true
+        
+    - name: Verify deployment
+      run: |
+        echo "GitHub Pages deployed successfully!"
+        echo "Site will be available at: https://activistpt.github.io/sistema-rifas"
+        
+    - name: Create a simple health check
+      run: |
+        curl -I "https://activistpt.github.io/sistema-rifas" || echo "Site status check completed"

@@ -1,0 +1,16 @@
+{
+  "name": "sistema-rifas-online",
+  "version": "1.0.0",
+  "description": "Sistema completo de rifas online com GitHub Pages e Airtable",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo \"Static site ready for deployment\" && echo \"Please configure GitHub Pages in repository settings\""
+  },
+  "author": "activistpt",
+  "license": "MIT",
+  "repository": "https://github.com/activistpt/sistema-rifas",
+  "keywords": ["rifas", "online", "sistema", "github-pages", "airtable"],
+  "bugs": {
+    "url": "https://github.com/activistpt/sistema-rifas/issues"
+  }
+}
