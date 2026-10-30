@@ -7,7 +7,7 @@
 const APP_CONFIG = {
   airtable: {
     baseId: 'appXXXXX', // Substitua pelo seu Base ID do Airtable
-    apiKey: 'keyXXXXX',  // Substitua pela sua API Key do Airtable
+    apiKey: 'sua_api_key_aqui', // Substitua pela sua API Key do Airtable
     tableName: 'Rifas'
   },
   raffle: {
