@@ -227,7 +227,7 @@ function updateSelectedDisplay() {
 async function loadFreeNumbers() {
   try {
     // Tentar carregar do CSV primeiro
-    var csvResponse = await fetch('sheets-data.csv');
+    var csvResponse = await fetch('/public/sheets-data.csv');
     if (csvResponse.ok) {
       var csvText = await csvResponse.text();
       var lines = csvText.trim().split('\n');
