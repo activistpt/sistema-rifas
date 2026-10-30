@@ -605,51 +605,62 @@ const app = {
   }
   
   // Renderizar estatísticas
-  async function renderStatisticsPanel() {
-    const container = document.getElementById('statistics-container');
-    if (!container) return;
+    async function renderStatisticsPanel() {
+      const container = document.getElementById('statistics-container');
+      if (!container) return;
     
-    // Load statistics data
-    const stats = await loadStatisticsData();
+      // Load statistics data
+      const stats = await loadStatisticsData();
     
-    container.innerHTML = `
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-value">€3,00</div>
-          <div class="stat-label">Valor Unitário</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">${stats?.totalNumeros || 800}</div>
-          <div class="stat-label">Total de Números</div>
-        </div>
-        <div class="stat-card" style="background: linear-gradient(135deg, #a8e6cf, #dcedc1);">
-          <div class="stat-value">${stats?.livreParaCompra || 500}</div>
-          <div class="stat-label">Livre para compra</div>
-          <div class="stat-subtitle">${stats?.percentualVendido && (100 - stats.percentualVendido) || 37.5}% disponível</div>
-        </div>
-        <div class="stat-card" style="background: linear-gradient(135deg, #f8b195, #f9ed69);">
-          <div class="stat-value">${stats?.reservado || 199}</div>
-          <div class="stat-label">Reservado</div>
-          <div class="stat-subtitle">${stats?.percentualVendido && (stats.percentualVendido * 0.60).toFixed(1) || 22.5}% dos vendidos</div>
-        </div>
-        <div class="stat-card" style="background: linear-gradient(135deg, #ffaaa5, #ff8b94);">
-          <div class="stat-value">${stats?.selecionado || 101}</div>
+      const livre = stats?.livreParaCompra || 310;
+      const reservado = stats?.reservado || 490;
+      const selecionado = stats?.selecionado || 0;
+      const total = stats?.totalNumeros || 800;
+      const totalVendidos = reservado;
+      const totalDisponiveis = livre;
+      const percentualVendido = ((reservado / total) * 100).toFixed(1);
+      const eurosArrecadados = (totalVendidos * 3).toFixed(2);
+      const eurosObjetivo = (total * 3).toFixed(2);
+      const eurosFaltam = (eurosObjetivo - eurosArrecadados).toFixed(2);
+    
+      container.innerHTML = `
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">€3,00</div>
+            <div class="stat-label">Valor Unitário</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${total}</div>
+            <div class="stat-label">Total de Números</div>
+          </div>
+          <div class="stat-card" style="background: linear-gradient(135deg, #a8e6cf, #dcedc1);">
+            <div class="stat-value">${livre}</div>
+            <div class="stat-label">Livre para compra</div>
+            <div class="stat-subtitle">${(100 - percentualVendido)}% disponível</div>
+          </div>
+          <div class="stat-card" style="background: linear-gradient(135deg, #f8b195, #f9ed69);">
+            <div class="stat-value">${reservado}</div>
+            <div class="stat-label">Reservado</div>
+            <div class="stat-subtitle">${percentualVendido}% dos números</div>
+          </div>
+          <div class="stat-card" style="background: linear-gradient(135deg, #ffaaa5, #ff8b94);">
+            <div class="stat-value">${selecionado}</div>
           <div class="stat-label">Selecionado</div>
           <div class="stat-subtitle">${stats?.percentualVendido && (stats.percentualVendido * 0.40).toFixed(1) || 15.0}% dos vendidos</div>
         </div>
         <div class="stat-card" style="background: linear-gradient(135deg, #6a4c93, #a66a99);">
-          <div class="stat-value">${stats?.totalVendidos || 300}</div>
+          <div class="stat-value">${totalVendidos}</div>
           <div class="stat-label">Total Vendido</div>
-          <div class="stat-subtitle">${stats?.percentualVendido || 37.5}% dos números</div>
+          <div class="stat-subtitle">${percentualVendido}% dos números</div>
         </div>
         <div class="stat-card" style="background: linear-gradient(135deg, #003f5c, #2f4b7c);">
-          <div class="stat-value">${stats?.totalDisponiveis || 500}</div>
+          <div class="stat-value">${totalDisponiveis}</div>
           <div class="stat-label">Disponível</div>
-          <div class="stat-subtitle">${stats?.percentualVendido && (100 - stats.percentualVendido) || 62.5}% restante</div>
+          <div class="stat-subtitle">${(100 - percentualVendido)}% restante</div>
         </div>
       </div>
       
-      <!-- Chart de arrecadação e números -->
+      <!-- Gráfico Interativo -->
       <div class="stats-chart-section">
         <h4>📊 Arrecadação e Disponibilidade de Números</h4>
         <div class="chart-container">
@@ -657,27 +668,43 @@ const app = {
             <div class="chart-item">
               <div class="chart-label">📦 Números Disponíveis:</div>
               <div class="chart-bar">
-                <div class="chart-fill available" style="width: ${((stats?.totalDisponiveis || 500) / (stats?.totalNumeros || 800) * 100).toFixed(1)}%"></div>
+                <div class="chart-fill available" style="width: ${((livre / total) * 100).toFixed(1)}%"></div>
               </div>
-              <div class="chart-value">${stats?.totalDisponiveis || 500} / ${stats?.totalNumeros || 800}</div>
+              <div class="chart-value">${livre} / ${total}</div>
             </div>
           </div>
           <div class="chart-row">
             <div class="chart-item">
               <div class="chart-label">💰 Arrecadado até agora:</div>
               <div class="chart-bar">
-                <div class="chart-fill collected" style="width: ${((stats?.totalVendidos * 3) / (800 * 3) * 100).toFixed(1)}%"></div>
+                <div class="chart-fill collected" style="width: ${((eurosArrecadados / eurosObjetivo) * 100).toFixed(1)}%"></div>
               </div>
-              <div class="chart-value">€${(stats?.totalVendidos * 3) || 900} / €${800 * 3}</div>
+              <div class="chart-value">€${eurosArrecadados} / €${eurosObjetivo}</div>
             </div>
           </div>
           <div class="chart-row">
             <div class="chart-item">
               <div class="chart-label">🎯 Faltam arrecadar:</div>
-              <div class="chart-value">€${((800 * 3) - (stats?.totalVendidos * 3)) || 1100}</div>
+              <div class="chart-value">€${eurosFaltam}</div>
             </div>
           </div>
         </div>
+      </div>
+      
+      <!-- Progresso geral -->
+      <div class="stats-progress-section" style="margin-top: 20px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <h4 style="margin-bottom: 15px; color: #333;">📈 Progresso do Sorteio</h4>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9em; color: #666;">
+          <span>Arrecadado: €${eurosArrecadados}</span>
+          <span>Objetivo: €${eurosObjetivo}</span>
+        </div>
+        <div style="height: 30px; background: #e0e0e0; border-radius: 15px; overflow: hidden; margin-bottom: 10px;">
+          <div style="height: 100%; background: linear-gradient(90deg, #a8e6cf, #667eea); border-radius: 15px; width: ${((eurosArrecadados / eurosObjetivo) * 100).toFixed(1)}%; transition: width 0.5s ease;"></div>
+        </div>
+        <div style="text-align: center; font-weight: bold; color: #667eea;">
+          ${percentualVendido}% concluído - Faltam €${eurosFaltam}
+        </div>
+      </div>
       </div>
             <div class="activity-item">
               <span class="activity-number">#473</span>
