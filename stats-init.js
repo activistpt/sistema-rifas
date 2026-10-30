@@ -149,7 +149,7 @@ async function renderStats() {
 // === QUANTITY SELECTOR FUNCTIONS ===
 // Estas funções são definidas globalmente para serem chamadas pelos onclick handlers
 
-// Incrementar quantidade
+// Incrementar quantidade - SELECIONA NUMEROS AUTOMATICAMENTE
 function incrementQuantity() {
   var maxAllowed = Math.min(g_freeNumbers.length, 50);
   if (g_quantity < maxAllowed) {
@@ -161,17 +161,15 @@ function incrementQuantity() {
     if (quantityDisplay) quantityDisplay.textContent = g_quantity;
     if (quantityPreview) quantityPreview.textContent = g_quantity;
     updateCalculatePreview();
-    // Avisar se precisa selecionar mais números
-    var selectedCount = g_selectedNumbers.length;
-    if (g_quantity > selectedCount) {
-      alert('Selecione ' + (g_quantity - selectedCount) + ' numero(s) clicando nos numeros livres abaixo.');
-    }
+    
+    // SELECIONAR NUMEROS AUTOMATICAMENTE
+    selectRandomNumbers(g_quantity);
   } else {
     alert('Limite maximo de ' + maxAllowed + ' numeros livres.');
   }
 }
 
-// Decrementar quantidade
+// Decrementar quantidade - REMOVE NUMEROS SELECIONADOS AUTOMATICAMENTE
 function decrementQuantity() {
   if (g_quantity > 1) {
     g_quantity--;
@@ -182,7 +180,38 @@ function decrementQuantity() {
     if (quantityDisplay) quantityDisplay.textContent = g_quantity;
     if (quantityPreview) quantityPreview.textContent = g_quantity;
     updateCalculatePreview();
+    
+    // AJUSTAR NUMEROS SELECIONADOS AUTOMATICAMENTE
+    selectRandomNumbers(g_quantity);
   }
+}
+
+// Selecionar números aleatórios automaticamente
+function selectRandomNumbers(count) {
+  if (!g_freeNumbers || g_freeNumbers.length === 0) return;
+  
+  // Limpar seleção atual e selecionar novamente
+  g_selectedNumbers = [];
+  
+  // Criar cópia dos números livres e embaralhar
+  var available = g_freeNumbers.slice();
+  for (var i = available.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = available[i];
+    available[i] = available[j];
+    available[j] = temp;
+  }
+  
+  // Selecionar os primeiros 'count' números
+  for (var k = 0; k < count && k < available.length; k++) {
+    g_selectedNumbers.push(available[k]);
+  }
+  
+  // Ordenar por valor
+  g_selectedNumbers.sort(function(a, b) { return a - b; });
+  
+  // Atualizar display
+  updateSelectedDisplay();
 }
 
 // Atualizar preview de cálculo
@@ -220,6 +249,11 @@ function updateSelectedDisplay() {
     } else {
       container.innerHTML = g_selectedNumbers.map(n => '<span class="selected-number">' + n + '</span>').join('');
     }
+  }
+  // Atualizar hidden input
+  var numerosInput = document.getElementById('numerosSelecionados');
+  if (numerosInput) {
+    numerosInput.value = g_selectedNumbers.join(',');
   }
 }
 
