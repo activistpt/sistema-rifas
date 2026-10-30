@@ -456,10 +456,10 @@
             </div>
 
             <div class="admin-link">
-                <a href="admin.html" target="_blank">
-                    🔐 Área de Administração (Admin)
-                </a>
-            </div>
+                                <a href="https://activistpt.github.io/sistema-rifas/admin.html?password=Medeiros" target="_blank">
+                                    🔐 Área de Administração (Admin)
+                                </a>
+                            </div>
         </div>
     </div>
 
@@ -468,12 +468,12 @@
         let freeNumbers = [];
         let selectedNumbers = [];
         let quantity = 1;
-        const valorUnitario = <?= config.rifa.valorUnitario || 5 ?>;
-        const adminPassword = "<?= config.adminPassword ?>";
+        const valorUnitario = APP_CONFIG.raffle.valorUnitario || 5;
+        const adminPassword = APP_CONFIG.adminPassword || "admin123";
         const airtableConfig = {
-            baseId: '<?= config.airtable.baseId ?>',
-            apiKey: '<?= config.airtable.apiKey ?>',
-            tableName: '<?= config.airtable.tableName ?>'
+            baseId: APP_CONFIG.airtable.baseId,
+            apiKey: APP_CONFIG.airtable.apiKey,
+            tableName: APP_CONFIG.airtable.tableName
         };
 
         // Carregar números livres quando a página carrega

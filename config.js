@@ -18,7 +18,7 @@ const APP_CONFIG = {
     iban: 'PT50 0000 0000 0000 0000 0000 0', // IBAN para pagamento
     adminEmail: 'admin@exemplo.com' // Email do administrador
   },
-  adminPassword: 'admin123' // Senha de admin - MUDE ESTA SENHA!
+  adminPassword: 'Medeiros' // Mude esta senha!
 };
 
 // Load configuration from localStorage if available (for runtime configuration)

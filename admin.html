@@ -396,9 +396,9 @@
         let allParticipants = [];
         let allNumbers = { free: [], reserved: {} };
         const airtableConfig = {
-            baseId: '<?= config.airtable.baseId ?>',
-            apiKey: '<?= config.airtable.apiKey ?>',
-            tableName: '<?= config.airtable.tableName ?>'
+            baseId: APP_CONFIG.airtable.baseId,
+            apiKey: APP_CONFIG.airtable.apiKey,
+            tableName: APP_CONFIG.airtable.tableName
         };
 
         // Login function
@@ -406,7 +406,7 @@
             const password = document.getElementById('adminPassword').value;
             const message = document.getElementById('loginMessage');
             
-            if (password === '<?= config.adminPassword ?>') {
+            if (password === 'Medeiros') {
                 currentUser = 'admin';
                 message.innerHTML = '✅ Login realizado com sucesso!';
                 message.className = 'alert success';
