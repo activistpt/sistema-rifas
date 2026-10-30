@@ -782,5 +782,30 @@
 
     <!-- Carregar script.js externo para estatísticas e funcionalidades -->
     <script src="script.js"></script>
+    
+    <!-- Carregar script standalone para estatísticas e chart -->
+    <script src="stats-init.js"></script>
+    
+    <!-- Inicializar estatísticas -->
+    <script>
+        // Mostrar container de estatísticas e renderizar
+        document.addEventListener('DOMContentLoaded', function() {
+            const statsContainer = document.getElementById('statistics-container');
+            if (statsContainer) {
+                statsContainer.style.display = 'block';
+            }
+            // Renderizar estatísticas e gráfico
+            if (typeof renderStats === 'function') {
+                renderStats();
+            }
+            // Carregar números livres
+            if (typeof loadFreeNumbers !== 'undefined') {
+                loadFreeNumbers();
+            }
+            // Atualizar displays de quantidade
+            document.getElementById('quantityDisplay').textContent = quantity;
+            document.getElementById('quantityPreview').textContent = quantity;
+        });
+    </script>
 </body>
 </html>
