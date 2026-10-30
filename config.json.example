@@ -1,0 +1,14 @@
+{
+  "name": "Sistema de Rifas Online (Exemplo)",
+  "description": "Selecione os números que deseja reservar para a rifa. Números marcados em vermelho já foram reservados.",
+  "valorUnitario": 5.00,
+  "totalNumeros": 100,
+  "iban": "PT50 0000 0000 0000 0000 0000 0",
+  "adminEmail": "admin@exemplo.com",
+  "autoUpdateNumbers": true,
+  "requirePhone": true,
+  "requireEmail": true,
+  "maxNumbersPerPerson": 10,
+  "paymentDeadlineDays": 7,
+  "notificationEmail": "admin@exemplo.com"
+}
