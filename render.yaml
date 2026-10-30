@@ -1,0 +1,20 @@
+# Render.com Deployment Configuration
+# Static site for Sistema de Rifas Online
+
+services:
+  - type: static-site
+    name: sistema-rifas
+    plan: free
+    env: static
+    buildCommand: |
+      # Ensure all files are in place
+      ls -la
+      # No build step needed for static HTML/CSS/JS
+    publishPath: .
+    routes:
+      - type: rewrite
+        source: /admin
+        destination: /admin.html
+      - type: rewrite
+        source: /admin/*
+        destination: /admin.html
