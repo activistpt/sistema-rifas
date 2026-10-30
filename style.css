@@ -546,15 +546,136 @@ body {
   color: #721c24;
 }
 
-/* Utilitários para acessibilidade */
-sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+/* CSS adicional para as novas estatísticas */
+/* Statistics grid estilo */
+.stats-details {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .stats-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.detail-section h4 {
+  color: #667eea;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+}
+
+.recent-activity {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  transition: all 0.3s ease;
+}
+
+.activity-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.activity-number {
+  font-weight: bold;
+  color: #667eea;
+}
+
+.activity-name {
+  flex: 1;
+  margin: 0 15px;
+}
+
+.activity-time {
+  font-size: 0.85em;
+  color: #666;
+}
+
+.popular-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.number-tag {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.stat-subtitle {
+  font-size: 0.85em;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* Animação para o cards */
+@keyframes pulseCard {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.stat-card {
+  animation: pulseCard 3s infinite ease-in-out;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0s; }
+.stat-card:nth-child(2) { animation-delay: 0.5s; }
+.stat-card:nth-child(3) { animation-delay: 1s; }
+.stat-card:nth-child(4) { animation-delay: 1.5s; }
+.stat-card:nth-child(5) { animation-delay: 2s; }
+.stat-card:nth-child(6) { animation-delay: 2.5s; }
+
+/* Responsivo para os novos estilos */
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
+  }
+  
+  .stat-card {
+    padding: 12px;
+  }
+  
+  .stat-value {
+    font-size: 1.3em;
+  }
+  
+  .stat-label {
+    font-size: 0.75em;
+  }
+  
+  .detail-section {
+    padding: 15px;
+  }
+  
+  .activity-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
 }
