@@ -5,7 +5,7 @@
 const RIFA_CONFIG = {
   totalNumeros: 800,
   valorUnitario: 3.00,
-  adminPassword: 'Medeiros'
+  adminPassword: 'rifas369!'
 };
 
 // Dados reais da planilha Google Sheets (exportados CSV)
