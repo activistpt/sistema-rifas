@@ -854,6 +854,13 @@ const app = {
 // Inicializar a aplicação quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
   app.init();
+  // Show statistics container after initialization
+  setTimeout(() => {
+    const statsContainer = document.getElementById('statistics-container');
+    if (statsContainer) {
+      statsContainer.style.display = 'block';
+    }
+  }, 100);
 });
 
 // Exportar para uso em outros arquivos
