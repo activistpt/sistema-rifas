@@ -293,7 +293,7 @@
             <div id="adminPanel" style="display: none;">
                 <div class="tabs">
                     <div class="tab active" onclick="showTab('config')">⚙️ Configuração</div>
-                    <div class="tab" onclick="showTab('participants')">👥 Participantes</div>
+                    <div class="tab" onclick="showTab('statistics')">📊 Estatísticas</div>
                     <div class="tab" onclick="showTab('numbers')">🎫 Números</div>
                 </div>
 
@@ -335,30 +335,14 @@
                     <button class="btn" onclick="resetRaffle()" style="margin-left: 10px;">🔄 Reiniciar Rifa</button>
                 </div>
 
-                <div id="tab-participants" class="tab-content">
-                    <h2>Gerenciamento de Participantes</h2>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <input type="text" id="searchParticipant" placeholder="Pesquisar participantes..." onkeyup="searchParticipants()">
+                <div id="tab-statistics" class="tab-content">
+                    <h2>📊 Estatísticas das Rifas (Google Sheets)</h2>
+                    <div id="statistics-table-container">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Carregando estatísticas do Google Sheets...</p>
+                        </div>
                     </div>
-                    
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Nome</th>
-                                <th>Email</th>
-                                <th>Telemóvel</th>
-                                <th>Números</th>
-                                <th>Total Pago</th>
-                                <th>Estado</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="participantsTable">
-                            <!-- Dados preenchidos via JavaScript -->
-                        </tbody>
-                    </table>
                 </div>
 
                 <div id="tab-numbers" class="tab-content">

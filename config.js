@@ -13,7 +13,7 @@ const APP_CONFIG = {
   raffle: {
     nome: 'Rifa de Exemplo', // Nome da sua rifa
     descricao: 'Selecione os números que deseja reservar para a rifa. Números marcados em vermelho já foram reservados.', // Descrição da rifa
-    valorUnitario: 5.00, // Valor unitário por número (em EUR)
+    valorUnitario: 3.00, // Valor unitário por número (em EUR)
     totalNumeros: 100, // Número total de números disponíveis
     iban: 'PT50 0000 0000 0000 0000 0000 0', // IBAN para pagamento
     adminEmail: 'admin@exemplo.com' // Email do administrador
