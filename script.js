@@ -549,7 +549,9 @@ const app = {
     return response;
   },
   
-  // Inicializar estatísticas
+  showStatisticsPanel() {
+    renderStatisticsPanel();
+  },
   async initStatistics() {
     try {
       // Carregar dados do Google Sheets
@@ -562,7 +564,7 @@ const app = {
         console.log('Estatísticas das rifas carregadas:', raffleStats);
         
         // Atualizar interface com estatísticas
-        this.renderStatistics();
+        this.showStatisticsPanel();
         
         // Salvar estatísticas no estado
         appState.googleSheetsData = raffleStats;
@@ -603,7 +605,7 @@ const app = {
   }
   
   // Renderizar estatísticas
-  async function renderStatistics() {
+  async function renderStatisticsPanel() {
     const container = document.getElementById('statistics-container');
     if (!container) return;
     
@@ -647,11 +649,36 @@ const app = {
         </div>
       </div>
       
-      <!-- Números disponíveis/rifas seções -->
-      <div class="stats-details">
-        <div class="detail-section">
-          <h4>Lançamentos Recentes</h4>
-          <div class="recent-activity">
+      <!-- Chart de arrecadação e números -->
+      <div class="stats-chart-section">
+        <h4>📊 Arrecadação e Disponibilidade de Números</h4>
+        <div class="chart-container">
+          <div class="chart-row">
+            <div class="chart-item">
+              <div class="chart-label">📦 Números Disponíveis:</div>
+              <div class="chart-bar">
+                <div class="chart-fill available" style="width: ${((stats?.totalDisponiveis || 500) / (stats?.totalNumeros || 800) * 100).toFixed(1)}%"></div>
+              </div>
+              <div class="chart-value">${stats?.totalDisponiveis || 500} / ${stats?.totalNumeros || 800}</div>
+            </div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-item">
+              <div class="chart-label">💰 Arrecadado até agora:</div>
+              <div class="chart-bar">
+                <div class="chart-fill collected" style="width: ${((stats?.totalVendidos * 3) / (800 * 3) * 100).toFixed(1)}%"></div>
+              </div>
+              <div class="chart-value">€${(stats?.totalVendidos * 3) || 900} / €${800 * 3}</div>
+            </div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-item">
+              <div class="chart-label">🎯 Faltam arrecadar:</div>
+              <div class="chart-value">€${((800 * 3) - (stats?.totalVendidos * 3)) || 1100}</div>
+            </div>
+          </div>
+        </div>
+      </div>
             <div class="activity-item">
               <span class="activity-number">#473</span>
               <span class="activity-name">Rui Martins</span>

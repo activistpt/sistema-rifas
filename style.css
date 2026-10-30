@@ -648,9 +648,109 @@ body {
 .stat-card:nth-child(3) { animation-delay: 1s; }
 .stat-card:nth-child(4) { animation-delay: 1.5s; }
 .stat-card:nth-child(5) { animation-delay: 2s; }
-.stat-card:nth-child(6) { animation-delay: 2.5s; }
+.chart-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
 
-/* Responsivo para os novos estilos */
+.chart-fill.available {
+  background: linear-gradient(90deg, #a8e6cf, #dcedc1);
+}
+
+.chart-fill.collected {
+  background: linear-gradient(90deg, #f8b195, #f9ed69);
+}
+
+.stats-chart-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 10px;
+  border-left: 4px solid #667eea;
+}
+
+.stats-chart-section h4 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chart-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+
+.chart-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.chart-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.chart-label {
+  font-weight: 600;
+  color: #555;
+  min-width: 150px;
+}
+
+.chart-bar {
+  flex: 1;
+  height: 30px;
+  background: #e0e0e0;
+  border-radius: 15px;
+  overflow: hidden;
+  max-width: 200px;
+}
+
+.chart-value {
+  font-weight: bold;
+  color: #333;
+  font-size: 1.1em;
+  min-width: 80px;
+  text-align: right;
+}
+
+/* Responsivo para o chart */
+@media (max-width: 768px) {
+  .chart-row {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  
+  .chart-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .chart-bar {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .chart-value {
+    text-align: left;
+  }
+}
 @media (max-width: 480px) {
   .stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
