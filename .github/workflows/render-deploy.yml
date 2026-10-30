@@ -1,0 +1,45 @@
+# GitHub Actions workflow for Render.com deployment
+# Trigger: push to main or manual dispatch
+
+name: Deploy to Render
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'admin.html'
+      - 'config.js'
+      - 'script.js'
+      - 'style.css'
+      - 'render.yaml'
+  workflow_dispatch:
+
+jobs:
+  render-deploy:
+    name: Deploy to Render
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: List deployment files
+        run: |
+          echo "Verificando arquivos de deploy..."
+          ls -la
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+
+      - name: Trigger Render deploy (requires RENDER_API_KEY secret)
+        if: ${{ secrets.RENDER_API_KEY != '' }}
+        run: |
+          curl -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json"
+
+      - name: Log status
+        run: |
+          echo "Site atualizado e pronto para deploy no Render"
+          echo "Para deploy automático, configure:"
+          echo "  - Secret RENDER_API_KEY no GitHub"
+          echo "  - Secret RENDER_SERVICE_ID no GitHub"
