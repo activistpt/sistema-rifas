@@ -728,7 +728,8 @@
             }
         }
 
-        // Inscrever na rifa
+        // Inscrever na rifa - envia dados por email via FormSubmit
+        // Inscrever na rifa - envia dados por email via FormSubmit
         async function inscreverRifa() {
             if (selectedNumbers.length === 0) {
                 showMessage('Por favor, selecione pelo menos um número', 'error');
@@ -751,35 +752,29 @@
                 // Gerar referência de pagamento única
                 const referencia = generateReference();
                 
-                // Preparar dados para o Airtable
-                const airtableRecords = [{
-                    fields: {
-                        'Nome': nome,
-                        'Email': email,
-                        'Telemóvel': telemovel,
-                        'Números Escolhidos': selectedNumbers.join(', '),
-                        'Quantidade': selectedNumbers.length,
-                        'Total a Pagar': (valorUnitario * selectedNumbers.length).toFixed(2),
-                        'Estado': 'criado',
-                        'Referência de Pagamento': referencia,
-                        'Data de Registo': new Date().toISOString()
-                    }
-                }];n
-                const response = await fetch(`https://api.airtable.com/v0/${airtableConfig.baseId}/${airtableConfig.tableName}`, {
+                // Preparar dados para envio por email via FormSubmit
+                const formData = new FormData();
+                formData.append('Nome', nome);
+                formData.append('Email', email);
+                formData.append('Telemóvel', telemovel);
+                formData.append('Números Escolhidos', selectedNumbers.join(', '));
+                formData.append('Quantidade', selectedNumbers.length);
+                formData.append('Total a Pagar', '€' + (valorUnitario * selectedNumbers.length).toFixed(2));
+                formData.append('Referência de Pagamento', referencia);
+                formData.append('Data de Registo', new Date().toISOString());
+                formData.append('_subject', 'Nova Inscrição Rifa Online - ' + nome);
+                
+                // Enviar via FormSubmit para o email do admin
+                const response = await fetch('https://formsubmit.co/hugo.medeiros.tec@gmail.com', {
                     method: 'POST',
+                    body: formData,
                     headers: {
-                        'Authorization': `Bearer ${airtableConfig.apiKey}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        records: airtableRecords
-                    })
+                        'Accept': 'application/json'
+                    }
                 });
                 
-                const data = await response.json();
-                
-                if (data.records && data.records.length > 0) {
-                    showMessage(`Inscrição realizada com sucesso! Números: ${selectedNumbers.join(', ')}. Total: €${(valorUnitario * selectedNumbers.length).toFixed(2)}. Referência: ${referencia}`, 'success');
+                if (response.ok) {
+                    showMessage('✅ Inscrição realizada com sucesso! Números: ' + selectedNumbers.join(', ') + '. Total: €' + (valorUnitario * selectedNumbers.length).toFixed(2) + '. Referência: ' + referencia, 'success');
                     
                     // Limpar formulário
                     selectedNumbers = [];
@@ -790,9 +785,9 @@
                     // Atualizar página após alguns segundos
                     setTimeout(() => {
                         window.location.reload();
-                    }, 3000);
+                    }, 5000);
                 } else {
-                    throw new Error('Falha ao registrar inscrição');
+                    throw new Error('Falha ao enviar inscrição');
                 }
             } catch (error) {
                 showMessage('Erro ao processar inscrição. Tente novamente.', 'error');
